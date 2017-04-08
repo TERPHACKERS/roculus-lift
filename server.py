@@ -1,20 +1,18 @@
 from flask import Flask, Blueprint, render_template
-from flask_sockets import Sockets
+from flask_socketio import SocketIO, emit
 
 html = Blueprint('html', __name__,
                  template_folder='templates')
 
 app = Flask(__name__)
 app.register_blueprint(html, url_prefix=r'/')
-sockets = Sockets(app)
+socketio = SocketIO(app)
 
-@sockets.route('/acc')
-def acc_socket(ws):
-    while not ws.closed:
-        message = ws.receive()
-        print(message)
-        ws.send(message)
 
+@socketio.on('push', namespace="/acc")
+def acc_socket(message):
+    print(message)
+    emit(message)
 
 @app.route('/')
 def hello():

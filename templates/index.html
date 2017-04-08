@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.7.3/socket.io.min.js"></script>
 <title>Accelerometer</title>
 <meta name="viewport" content="width=device-width,user-scalable=yes" />
 <style>
@@ -64,10 +65,10 @@ if (window.DeviceMotionEvent != undefined) {
 	}
 }
 
-var socket = new WebSocket("ws://dev.txtpen.com:5000/acc");
+var socket = io("ws://dev.txtpen.com:5000/acc");
 
 function sendSock(e){
- socket.send(e);
+ socket.emit('push',e);
 }
 </script>
 
