@@ -1,14 +1,15 @@
-var flag = true;
-var count = 0;
-var x = 0, y = 0,
-    vx = 0, vy = 0,
-	ax = 0, ay = 0;
+/* variables */
+var x = 0, y = 0;, z = 0, rot_a = 0; rot_b = 0; rot_c = 0;
 
 window.ondevicemotion = function(e) {
 
-  var data_x = (e.accelerationIncludingGravity.x).toFixed(1);
-  var data_y = (e.accelerationIncludingGravity.y).toFixed(1);
-  var data_z = (e.accelerationIncludingGravity.z).toFixed(1);
+  let x = e.accelerationIncludingGravity.x;
+  let y = e.accelerationIncludingGravity.y;
+  let z = e.accelerationIncludingGravity.z;
+
+  var data_x = (x).toFixed(1);
+  var data_y = (y).toFixed(1);
+  var data_z = (z).toFixed(1);
 
   var rot_a = (e.rotationRate.alpha).toFixed(0);
   var rot_b = (e.rotationRate.beta).toFixed(0);
@@ -26,7 +27,6 @@ window.ondevicemotion = function(e) {
   sendSock(JSON.stringify(obj));
 
 }
-
 
 var socket = new WebSocket("ws://dev.txtpen.com:5000/acc");
 
