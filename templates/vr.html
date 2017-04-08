@@ -7,7 +7,7 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.7.3/socket.io.min.js"></script>
     </head>
     <body>
-      <a-scene>
+      <!-- <a-scene>
         <a-sphere
           v-bind:position="spherePositionAttr"
           radius="1.25"
@@ -19,37 +19,21 @@
           height="4"
           color="#7BC8A4"
         ></a-plane>
-      </a-scene>
+      </a-scene> -->
+
+      {{sphere.position.alpha}}
     </body>
 
 <script>
-  const tween = TweenMax;
-
-  var obj = {};
-  var socket = io.connect("ws://dev.txtpen.com:5000/acc");
-  var onevent = socket.onevent;
-  socket.onevent = function (packet) {
-      var args = packet.data || [];
-      onevent.call (this, packet);    // original call
-      packet.data = ["*"].concat(args);
-      onevent.call(this, packet);      // additional call to catch-all
-  };
-
-  socket.on('*', (data)=>{
-    obj = JSON.parse(data);
-    console.log(obj);
-    //this.sphere.position.z = obj.gamma;
-  });
-
 
   new Vue({
     el: 'body',
     data: {
       sphere: {
         position: {
-          x: 1,
-          y: 1,
-          z: -1
+          alpha: 0,
+          beta: 0,
+          gamma: 0
         }
       },
       plane: {
@@ -67,6 +51,30 @@
     },
     ready () {
       // TweenMax.to(this.sphere.position, 1, {bezier:[{x:1, y:1}, {x:0, y:2}, {x:-1, y:1}, {x:0, y:0}, {x:1, y:1}], ease:Linear.easeNone, repeat: -1});
+    },
+    mount() {
+      // const tween = TweenMax;
+
+      var obj = {};
+
+      var socket = io.connect("ws://dev.txtpen.com:5000/acc");
+      var onevent = socket.onevent;
+
+      socket.onevent = function (packet) {
+          var args = packet.data || [];
+          onevent.call (this, packet);    // original call
+          packet.data = ["*"].concat(args);
+          onevent.call(this, packet);      // additional call to catch-all
+      };
+
+      socket.on('*', (data)=>{
+        obj = JSON.parse(data);
+        console.log(obj);
+        sphere.position.alpha = obj.alpha;
+        sphere.position.beta = obj.beta;
+        sphere.position.gamma = obj.gamma;
+      });
+
     }
   })
 </script>
