@@ -23,8 +23,8 @@ function handleOrientation(event) {
 
 }
 
-var socket = new WebSocket("ws://dev.txtpen.com:5000/acc");
+var socket = io.connect("ws://dev.txtpen.com:5000/acc");
 
 function sendSock(e){
- socket.send(e);
+ socket.emit('push',e);
 }

@@ -26,7 +26,13 @@
   const tween = TweenMax;
 
   var obj = {};
-  var socket = io("ws://dev.txtpen.com:5000/acc");
+  var socket = io.connect("ws://dev.txtpen.com:5000/acc");
+  socket.on('connection', function(evt) { console.log("Connection open ...")});
+  socket.on('push', (data)=>{
+    console.log(data);
+    obj = JSON.parse(data);
+    this.sphere.position.data_z;
+  });
 
   new Vue({
     el: 'body',
@@ -52,11 +58,6 @@
       }
     },
     ready () {
-      socket.on('push', (data)=>{
-        console.log(data);
-        obj = JSON.parse(data);
-        this.sphere.position.data_z;
-      });
       // TweenMax.to(this.sphere.position, 1, {bezier:[{x:1, y:1}, {x:0, y:2}, {x:-1, y:1}, {x:0, y:0}, {x:1, y:1}], ease:Linear.easeNone, repeat: -1});
     }
   })
