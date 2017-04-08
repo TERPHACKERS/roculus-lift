@@ -55,10 +55,8 @@
       socket.on('push', (data)=>{
         console.log(data);
         obj = JSON.parse(data);
+        this.sphere.position.data_z;
       });
-  
-      this.sphere.position.z = obj.data_z;
-      console.log(obj.data_z);
       // TweenMax.to(this.sphere.position, 1, {bezier:[{x:1, y:1}, {x:0, y:2}, {x:-1, y:1}, {x:0, y:0}, {x:1, y:1}], ease:Linear.easeNone, repeat: -1});
     }
   })

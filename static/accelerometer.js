@@ -1,5 +1,5 @@
 /* variables */
-var x = 0, y = 0;, z = 0, rot_a = 0; rot_b = 0; rot_c = 0;
+var x = 0, y = 0, z = 0, rot_a = 0, rot_b = 0, rot_c = 0;
 
 window.ondevicemotion = function(e) {
 
