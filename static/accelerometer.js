@@ -1,36 +1,30 @@
 /* variables */
 var x = 0, y = 0, z = 0, rot_a = 0, rot_b = 0, rot_c = 0;
 
-window.ondevicemotion = function(e) {
+console.log("File linked");
 
-  let x = e.accelerationIncludingGravity.x;
-  let y = e.accelerationIncludingGravity.y;
-  let z = e.accelerationIncludingGravity.z;
+window.addEventListener("deviceorientation", handleOrientation, true);
 
-  var data_x = (x).toFixed(1);
-  var data_y = (y).toFixed(1);
-  var data_z = (z).toFixed(1);
+function handleOrientation(event) {
+  console.log("Device orientation activated");
+  
+  var absolute = event.absolute;
+  var alpha    = event.alpha;
+  var beta     = event.beta;
+  var gamma    = event.gamma;
 
-  var rot_a = (e.rotationRate.alpha).toFixed(0);
-  var rot_b = (e.rotationRate.beta).toFixed(0);
-  var rot_c = (e.rotationRate.gamma).toFixed(0);
+  document.getElementById("orientationAbsolute").innerHTML = absolute;
+  document.getElementById("orientationAlpha").innerHTML = alpha;
+  document.getElementById("orientationBeta").innerHTML = beta;
+  document.getElementById("orientationGamma").innerHTML = gamma;
 
-	document.getElementById("accelerationX").innerHTML = data_x;
-	document.getElementById("accelerationY").innerHTML = data_y;
-	document.getElementById("accelerationZ").innerHTML = data_z;
-
-  document.getElementById("rotationAlpha").innerHTML = rot_a;
-  document.getElementById("rotationBeta").innerHTML = rot_b;
-  document.getElementById("rotationGamma").innerHTML = rot_c;
-
-  var obj = {data_x, data_y, data_z, rot_a, rot_b, rot_c};
+  var obj = {absolute, alpha, beta, gamma};
   sendSock(JSON.stringify(obj));
 
 }
 
-var socket = io("ws://dev.txtpen.com:5000/acc");
+var socket = new WebSocket("ws://dev.txtpen.com:5000/acc");
 
 function sendSock(e){
- socket.emit('push',e);
+ socket.send(e);
 }
-
