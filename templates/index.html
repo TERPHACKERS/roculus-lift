@@ -47,13 +47,11 @@ if (window.DeviceMotionEvent != undefined) {
       flag = false;
       count += 1;
     }
-		document.getElementById("accelerationX").innerHTML = (e.accelerationIncludingGravity.x).toFixed(1);
-		document.getElementById("accelerationY").innerHTML = (e.accelerationIncludingGravity.y).toFixed(1);
-		document.getElementById("accelerationZ").innerHTML = (e.accelerationIncludingGravity.z).toFixed(1);
-
+	document.getElementById("accelerationX").innerHTML = (e.accelerationIncludingGravity.x).toFixed(1);
+	document.getElementById("accelerationY").innerHTML = (e.accelerationIncludingGravity.y).toFixed(1);
+	document.getElementById("accelerationZ").innerHTML = (e.accelerationIncludingGravity.z).toFixed(1);
     document.getElementById("count").innerHTML = count;
-
-		if ( e.rotationRate ) {
+	if ( e.rotationRate ) {
 			document.getElementById("rotationAlpha").innerHTML = (e.rotationRate.alpha).toFixed(0);;
 			document.getElementById("rotationBeta").innerHTML = (e.rotationRate.beta).toFixed(0);;
 			document.getElementById("rotationGamma").innerHTML = (e.rotationRate.gamma).toFixed(0);;
