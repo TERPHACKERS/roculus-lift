@@ -12,7 +12,7 @@ sockets = Sockets(app)
 def echo_socket(ws):
     while not ws.closed:
         message = ws.receive()
-        print message
+        print(message)
         ws.send(message)
 
 
