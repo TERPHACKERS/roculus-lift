@@ -27,12 +27,19 @@
 
   var obj = {};
   var socket = io.connect("ws://dev.txtpen.com:5000/acc");
+  var onevent = socket.onevent;
   socket.onevent = function (packet) {
       var args = packet.data || [];
-      socket.onevent.call (this, packet);    // original call
+      onevent.call (this, packet);    // original call
       packet.data = ["*"].concat(args);
-      socket.onevent.call(this, packet);      // additional call to catch-all
+      onevent.call(this, packet);      // additional call to catch-all
   };
+
+  socket.on('*', (data)=>{
+    obj = JSON.parse(data);
+    console.log(obj);
+    //this.sphere.position.z = obj.gamma;
+  });
 
 
   new Vue({
@@ -59,11 +66,6 @@
       }
     },
     ready () {
-      socket.on('*', (data)=>{
-        console.log(data);
-        obj = JSON.parse(data);
-        this.sphere.position.z = obj.gamma;
-      });
       // TweenMax.to(this.sphere.position, 1, {bezier:[{x:1, y:1}, {x:0, y:2}, {x:-1, y:1}, {x:0, y:0}, {x:1, y:1}], ease:Linear.easeNone, repeat: -1});
     }
   })
