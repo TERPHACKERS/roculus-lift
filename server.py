@@ -12,7 +12,7 @@ socketio = SocketIO(app)
 @socketio.on('push', namespace="/acc")
 def acc_socket(message):
     print(message)
-    emit(message)
+    emit(message, broadcast=True)
 
 @app.route('/')
 def hello():
