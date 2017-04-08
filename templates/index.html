@@ -26,50 +26,7 @@ body {
 <span id="count"></span>
 
 </div>
-<script type="text/javascript">
-var flag = true;
-var count = 0;
-var x = 0, y = 0,
-    vx = 0, vy = 0,
-	ax = 0, ay = 0;
-if (window.DeviceMotionEvent != undefined) {
-	window.ondevicemotion = function(e) {
-		ax = event.accelerationIncludingGravity.x * 5;
-		ay = event.accelerationIncludingGravity.y * 5;
-    if (e.accelerationIncludingGravity.z < -5) {
-      document.getElementById("rep").innerHTML = "down rep";
-      flag = true;
-    } else if(flag === true && e.accelerationIncludingGravity.z > -3) {
-      document.getElementById("rep").innerHTML = "up rep";
-      flag = false;
-      count += 1;
-    }
-    var data_x = (e.accelerationIncludingGravity.x).toFixed(1);
-    var data_y = (e.accelerationIncludingGravity.y).toFixed(1);
-    var data_z = (e.accelerationIncludingGravity.z).toFixed(1);
-
-	document.getElementById("accelerationX").innerHTML = data_x;
-	document.getElementById("accelerationY").innerHTML = data_y;
-	document.getElementById("accelerationZ").innerHTML = data_z;
-    document.getElementById("count").innerHTML = count;
-
-    var obj = {data_x, data_y, data_z, count};
-    sendSock(JSON.stringify(obj));
-
-	if ( e.rotationRate ) {
-			document.getElementById("rotationAlpha").innerHTML = (e.rotationRate.alpha).toFixed(0);
-			document.getElementById("rotationBeta").innerHTML = (e.rotationRate.beta).toFixed(0);
-			document.getElementById("rotationGamma").innerHTML = (e.rotationRate.gamma).toFixed(0);
-		}
-	}
-}
-
-var socket = new WebSocket("ws://dev.txtpen.com:5000/acc");
-
-function sendSock(e){
- socket.send(e);
-}
-</script>
+<script type="text/javascript" src="/static/accelerometer.js"></script>
 
 </body>
 </html>
