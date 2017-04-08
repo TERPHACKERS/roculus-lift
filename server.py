@@ -9,7 +9,7 @@ app.register_blueprint(html, url_prefix=r'/')
 sockets = Sockets(app)
 
 @sockets.route('/acc')
-def echo_socket(ws):
+def acc_socket(ws):
     while not ws.closed:
         message = ws.receive()
         print(message)
