@@ -20,6 +20,9 @@ def acc_socket(ws):
 def hello():
     return render_template('/index.html')
 
+@app.route('/vr')
+def render():
+    return render_template('/vr.html')
 
 if __name__ == "__main__":
     from gevent import pywsgi

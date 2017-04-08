@@ -52,13 +52,14 @@ if (window.DeviceMotionEvent != undefined) {
 	document.getElementById("accelerationY").innerHTML = data_y;
 	document.getElementById("accelerationZ").innerHTML = data_z;
     document.getElementById("count").innerHTML = count;
-    
-    var obj = {data_x, data_y, data_z};
+
+    var obj = {data_x, data_y, data_z, count};
     sendSock(JSON.stringify(obj));
+
 	if ( e.rotationRate ) {
-			document.getElementById("rotationAlpha").innerHTML = (e.rotationRate.alpha).toFixed(0);;
-			document.getElementById("rotationBeta").innerHTML = (e.rotationRate.beta).toFixed(0);;
-			document.getElementById("rotationGamma").innerHTML = (e.rotationRate.gamma).toFixed(0);;
+			document.getElementById("rotationAlpha").innerHTML = (e.rotationRate.alpha).toFixed(0);
+			document.getElementById("rotationBeta").innerHTML = (e.rotationRate.beta).toFixed(0);
+			document.getElementById("rotationGamma").innerHTML = (e.rotationRate.gamma).toFixed(0);
 		}
 	}
 }
