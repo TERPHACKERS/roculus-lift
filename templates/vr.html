@@ -7,7 +7,7 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.7.3/socket.io.min.js"></script>
     </head>
     <body>
-      <!-- <a-scene>
+      <a-scene>
         <a-sphere
           v-bind:position="spherePositionAttr"
           radius="1.25"
@@ -19,11 +19,7 @@
           height="4"
           color="#7BC8A4"
         ></a-plane>
-      </a-scene> -->
-
-      ${sphere.position.alpha}
-      ${sphere.position.beta}
-      ${sphere.position.gamma}
+      </a-scene>
     </body>
 
 <script>
@@ -50,14 +46,10 @@ Vue.config.delimiters = ["${", "}"];
     computed: {
       spherePositionAttr () {
         const pos = this.sphere.position;
-        return `${pos.x} ${pos.y} ${pos.z}`;
+        return `${pos.beta} ${pos.beta} ${pos.beta}`;
       }
     },
     ready () {
-      // TweenMax.to(this.sphere.position, 1, {bezier:[{x:1, y:1}, {x:0, y:2}, {x:-1, y:1}, {x:0, y:0}, {x:1, y:1}], ease:Linear.easeNone, repeat: -1});
-    },
-    mounted() {
-      // const tween = TweenMax;
 
       var obj = {};
 
@@ -78,8 +70,8 @@ Vue.config.delimiters = ["${", "}"];
         this.sphere.position.beta = obj.beta;
         this.sphere.position.gamma = obj.gamma;
       });
-
-    }
+      // TweenMax.to(this.sphere.position, 1, {bezier:[{x:1, y:1}, {x:0, y:2}, {x:-1, y:1}, {x:0, y:0}, {x:1, y:1}], ease:Linear.easeNone, repeat: -1});
+    },
   })
 </script>
 
