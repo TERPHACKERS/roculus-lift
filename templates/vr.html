@@ -22,6 +22,8 @@
       </a-scene> -->
 
       ${sphere.position.alpha}
+      ${sphere.position.beta}
+      ${sphere.position.gamma}
     </body>
 
 <script>
@@ -72,9 +74,9 @@ Vue.config.delimiters = ["${", "}"];
       socket.on('*', (data)=>{
         obj = JSON.parse(data);
         console.log(obj);
-        sphere.position.alpha = obj.alpha;
-        sphere.position.beta = obj.beta;
-        sphere.position.gamma = obj.gamma;
+        this.sphere.position.alpha = obj.alpha;
+        this.sphere.position.beta = obj.beta;
+        this.sphere.position.gamma = obj.gamma;
       });
 
     }
