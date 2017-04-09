@@ -1,5 +1,5 @@
 from flask import Flask, Blueprint, render_template
-from flask_socketio import SocketIO, emit
+from flask_socketio import SocketIO, emit, disconnect
 
 curr_client_num = 0
 
@@ -12,19 +12,21 @@ socketio = SocketIO(app)
 
 @socketio.on('connect', namespace='/sensor')
 def sensor_connect():
-
+    global curr_client_num
     if (curr_client_num > 1):
         disconnect()
+    else:
+        i = curr_client_num
+        curr_client_num+=1
 
-    i = curr_client_num
-    curr_client_num+=1
-
-    print('Adding client id ',i)
-    emit('set client id', {'client_id': i})
+        print('Adding client id, now ',i+1)
+        emit('set client id', {'client_id': i})
 
 @socketio.on('disconnect', namespace='/sensor')
 def sensor_disconnect():
-    print('Removing client, now ',curr_client_num)
+    global curr_client_num
+    print('Removing client, now ', curr_client_num-1)
+    curr_client_num-=1
 
 @socketio.on('push', namespace="/sensor")
 def acc_socket(message):
