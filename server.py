@@ -1,7 +1,8 @@
 from flask import Flask, Blueprint, render_template
 from flask_socketio import SocketIO, emit
 
-client_id_set = set()
+# client_id_set = set()
+curr_client_id = 0
 
 html = Blueprint('html', __name__,
                  template_folder='templates')
@@ -13,18 +14,19 @@ socketio = SocketIO(app)
 @socketio.on('connect', namespace='/sensor')
 def sensor_connect():
 
-    i = 0
-    while i in client_id_set:
-        i+=1
+    # i = 0
+    # while i in client_id_set:
+    #     i+=1
+    # client_id_set.add(i)
 
-    client_id_set.add(i)
+    i = (curr_client_id+1)%2
 
     print('Adding client id ',i)
-    emit('set client id', {'client_id': i})
+    emit('set client id', i)
 
 @socketio.on('disconnect sensor', namespace='/sensor')
 def sensor_disconnect(message):
-    print('Removing client id ',i)
+    print('Removing client id ',message)
     client_id_set.remove(message)
 
 @socketio.on('push', namespace="/sensor")
