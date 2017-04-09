@@ -216,40 +216,6 @@
       </mesh>
       <extra><technique profile="MAYA"><double_sided>1</double_sided></technique></extra>
     </geometry>
-    <geometry id="Plane-mesh" name="Plane">
-      <mesh>
-        <source id="Plane-mesh-positions">
-          <float_array id="Plane-mesh-positions-array" count="12">1 -1 0 -1 -1 0 1 1 0 -1 1 0</float_array>
-          <technique_common>
-            <accessor source="#Plane-mesh-positions-array" count="4" stride="3">
-              <param name="X" type="float"/>
-              <param name="Y" type="float"/>
-              <param name="Z" type="float"/>
-            </accessor>
-          </technique_common>
-        </source>
-        <source id="Plane-mesh-normals">
-          <float_array id="Plane-mesh-normals-array" count="6">0 0 1 0 0 1</float_array>
-          <technique_common>
-            <accessor source="#Plane-mesh-normals-array" count="2" stride="3">
-              <param name="X" type="float"/>
-              <param name="Y" type="float"/>
-              <param name="Z" type="float"/>
-            </accessor>
-          </technique_common>
-        </source>
-        <vertices id="Plane-mesh-vertices">
-          <input semantic="POSITION" source="#Plane-mesh-positions"/>
-        </vertices>
-        <polylist material="Material_001-material" count="2">
-          <input semantic="VERTEX" source="#Plane-mesh-vertices" offset="0"/>
-          <input semantic="NORMAL" source="#Plane-mesh-normals" offset="1"/>
-          <vcount>3 3 </vcount>
-          <p>1 0 0 0 2 0 3 1 1 1 2 1</p>
-        </polylist>
-      </mesh>
-      <extra><technique profile="MAYA"><double_sided>1</double_sided></technique></extra>
-    </geometry>
   </library_geometries>
   <library_controllers/>
   <library_visual_scenes>
@@ -268,16 +234,6 @@
           <bind_material>
             <technique_common>
               <instance_material symbol="Material-material" target="#Material-material"/>
-            </technique_common>
-          </bind_material>
-        </instance_geometry>
-      </node>
-      <node id="Plane" name="Plane" type="NODE">
-        <matrix sid="transform">6.083834 0 0 0 0 6.083834 0 0 0 0 6.083834 0 0 0 0 1</matrix>
-        <instance_geometry url="#Plane-mesh">
-          <bind_material>
-            <technique_common>
-              <instance_material symbol="Material_001-material" target="#Material_001-material"/>
             </technique_common>
           </bind_material>
         </instance_geometry>
