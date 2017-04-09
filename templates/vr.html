@@ -50,6 +50,9 @@
           width: 4,
           height: 4
         }
+      },
+      sounds: {
+        score: new Audio('../Static/beep.mp3')
       }
     },
     computed: {
@@ -58,7 +61,13 @@
         return `${pos.x} ${pos.y} ${pos.z}`;
       }
     },
+    methods: {
+      playScoreSound: function(){
+        this.sounds.score.play()
+      }
+    },
     ready () {
+      this.sounds.score.play()
       socket.on('*', (data)=>{
         console.log(data);
         obj = JSON.parse(data);
