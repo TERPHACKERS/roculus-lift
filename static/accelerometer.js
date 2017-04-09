@@ -48,7 +48,7 @@ function handleOrientation(event) {
 }
 
 function sendSock(e){
-  if(id!=-1){
+  if(client_id!=-1){
     socket.emit('push',e);
   }
 }
