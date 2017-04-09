@@ -39,15 +39,19 @@
       <a-light color="#ED7140" distance="100" intensity="0.4" type="point"></a-light>
       <a-light color="#ED7140" position="3 10 -10" distance="50" intensity="0.4" type="point"></a-light>
 
-      <lift-rock @score="score1" :playerNum="1" :alpha="rock1.alpha" :beta="rock1.beta" :gamma="rock1.gamma" :horizontal_pos="rock1.horizontal_pos"></lift-rock>
-      <lift-rock @score="score2" :playerNum="2" :alpha="rock2.alpha" :beta="rock2.beta" :gamma="rock2.gamma" :horizontal_pos="rock2.horizontal_pos"></lift-rock>
+      <lift-rock @score="score1Func" :playerNum="1" :alpha="rock1.alpha" :beta="rock1.beta" :gamma="rock1.gamma" :horizontal_pos="rock1.horizontal_pos"></lift-rock>
+      <lift-rock @score="score2Func" :playerNum="2" :alpha="rock2.alpha" :beta="rock2.beta" :gamma="rock2.gamma" :horizontal_pos="rock2.horizontal_pos"></lift-rock>
 
       <!-- Text -->
-      <a-entity scale="10 10 10" position="4.85 2 8" :text="'opacity: 0.8; value: '+ i +'; zOffset: 0'"></a-entity>
+      <a-entity v-if="i!=5 && i!=0 " id="timerText" scale="15 15 15" position="-7.5 2.92 3.36" rotation="0 180 0" :text="'opacity: 0.8; value: '+ (i+1) +'; zOffset: 0'"></a-entity>
+
+      <!-- Score Text -->
+      <a-entity v-if="isStarted " scale="15 15 15" position="-8.5 2.92 3.36" rotation="0 180 0" :text="'opacity: 0.8; value: '+ (score1) +'; zOffset: 0'"></a-entity>
+      <a-entity v-if="isStarted " scale="15 15 15" position="-6.5 2.92 3.36" rotation="0 180 0" :text="'opacity: 0.8; value: '+ (score2) +'; zOffset: 0'"></a-entity>
 
       <!-- Camera -->
-      <a-entity position="0 0 10">
-        <a-camera></a-camera>
+      <a-entity position="-0.06 1 -0.45" rotation="0 -177 0">
+        <a-camera position="0 0 0" rotation="2.2 -4.35 0"></a-camera>
       </a-entity>
 
       </a-scene>
@@ -79,18 +83,19 @@ Vue.component('lift-rock', {
   data: function(){
     return {
       sounds: {
-        score: new Audio('../static/beep.mp3'),
+        score: new Audio('../static/coin.wav'),
         splash: new Audio('../static/splash.mp3'),
       },
-      playedScoreSound : false,
-      playedSplashSound : false,
+      playedScoreSound: false,
+      playedSplashSound: false,
+      hasHitBottom: false
     }
   },
   computed: {
     spherePositionAttr: function () {
       //console.log(this)
 
-      return this.horizontal_pos + ' ' + this.beta + ' ' + 4;
+      return this.horizontal_pos + ' ' + this.beta + ' ' + 5;
     }
   },
   watch: {
@@ -98,9 +103,9 @@ Vue.component('lift-rock', {
       console.log("THRESHOLD " + threshold);
       /* play splash when r\each ocean */
       if(threshold < 0.3) {
+        this.hasHitBottom = true
         if(!this.playedSplashSound){
           this.sounds.splash.play()
-          //this.$emit('score')
           this.playedSplashSound = true;
         }
       } else {
@@ -108,10 +113,12 @@ Vue.component('lift-rock', {
       }
 
       /* play scored sound when reach high level */
-      if(threshold > 2.0){
+      if(threshold > 2.0 && this.hasHitBottom){
+        this.hasHitBottom = false
         if(!this.playedScoreSound){
           this.sounds.score.play()
           this.playedScoreSound = true;
+          this.$emit('score')
         }
       } else{
         this.playedScoreSound = false;
@@ -134,13 +141,13 @@ Vue.component('lift-rock', {
         alpha: 0,
         beta: 0,
         gamma: 0,
-        horizontal_pos: 0,
+        horizontal_pos: -1.4,
       },
       rock2 : {
         alpha: 0,
         beta: 0,
         gamma: 0,
-        horizontal_pos: 2,
+        horizontal_pos: 1,
       },
       sounds: {
         win: new Audio('../static/win.wav'),
@@ -157,17 +164,17 @@ Vue.component('lift-rock', {
       toggled: false,
     },
     methods: {
-      score1: function(){
+      score1Func: function(){
         if (!this.isStarted) return;
         this.score1++
-        if(this.score1 > 9){
+        if(this.score1 % 10 == 0){
           this.sounds.win.play()
         }
       },
-      score2: function(){
+      score2Func: function(){
         if (!this.isStarted) return;
         this.score2++
-        if(this.score1 > 9){
+        if(this.score1 % 10 == 0){
           this.sounds.win.play()
         }
       },
@@ -198,7 +205,6 @@ Vue.component('lift-rock', {
           // this.sphere.position.beta = posY < 0 ? 0 : posY;
           this.rock1.beta = obj.beta / 30;
           this.rock1.gamma = (1 - obj.gamma) / 10;
-          this.rock1.horizontal_pos = 0;
         } else if (obj.me == 'b') {
           this.isReadyB = true;
           this.rock2.alpha = obj.alpha;
@@ -206,7 +212,6 @@ Vue.component('lift-rock', {
           // this.sphere.position.beta = posY < 0 ? 0 : posY;
           this.rock2.beta = obj.beta / 30;
           this.rock2.gamma = (1 - obj.gamma) / 10;
-          this.rock2.horizontal_pos = 2;
         }
 
         if (! this.toggled) {
@@ -221,7 +226,7 @@ Vue.component('lift-rock', {
               this.i = this.i - 1;
               speechSynthesis.speak(new SpeechSynthesisUtterance((this.i+1).toString()));
               console.log(this.i);
-              
+
               // draw text
 
               if (this.i == 0){
