@@ -6,7 +6,7 @@
         <script src="http://cdn.rawgit.com/donmccurdy/aframe-extras/v3.7.0/dist/aframe-extras.min.js"></script>
         <script src="https://cdn.rawgit.com/zcanter/aframe-gradient-sky/master/dist/gradientsky.min.js"></script>
     </head>
-    <body>
+    <body @keyup.90="reset">
 
       <!-- Music -->
       <audio autoplay loop id="backgroundSound">
@@ -16,8 +16,6 @@
       <audio autoplay loop id="backgroundSound">
         <source src="static/tune-1.wav" type="audio/wav"> Your browser does not support audio
       </audio>
-
-      <!-- Text -->
 
       <!-- Scene -->
       <a-scene fog="type: linear; near: 2; far: 50; color: #000a1c">
@@ -41,8 +39,11 @@
       <a-light color="#ED7140" distance="100" intensity="0.4" type="point"></a-light>
       <a-light color="#ED7140" position="3 10 -10" distance="50" intensity="0.4" type="point"></a-light>
 
-      <lift-rock :playerNum="1" :alpha="rock1.alpha" :beta="rock1.beta" :gamma="rock1.gamma" :horizontal_pos="rock1.horizontal_pos"></lift-rock>
-      <lift-rock :playerNum="2" :alpha="rock2.alpha" :beta="rock2.beta" :gamma="rock2.gamma" :horizontal_pos="rock2.horizontal_pos"></lift-rock>
+      <lift-rock @score="score1" :playerNum="1" :alpha="rock1.alpha" :beta="rock1.beta" :gamma="rock1.gamma" :horizontal_pos="rock1.horizontal_pos"></lift-rock>
+      <lift-rock @score="score2" :playerNum="2" :alpha="rock2.alpha" :beta="rock2.beta" :gamma="rock2.gamma" :horizontal_pos="rock2.horizontal_pos"></lift-rock>
+
+      <!-- Text -->
+      <a-entity scale="10 10 10" position="4.85 2 8" text="opacity: 0.8; value: 5; zOffset: 0"></a-entity>
 
       <!-- Camera -->
       <a-entity position="0 0 10">
@@ -99,6 +100,7 @@ Vue.component('lift-rock', {
       if(threshold < 0.3) {
         if(!this.playedSplashSound){
           this.sounds.splash.play()
+          this.$emit('score')
           this.playedSplashSound = true;
         }
       } else {
@@ -139,9 +141,31 @@ Vue.component('lift-rock', {
         beta: 0,
         gamma: 0,
         horizontal_pos: 2,
+      },
+      sounds: {
+        win: new Audio('../static/win.wav'),
+      },
+      score1: 0,
+      score2: 0
+    },
+    methods: {
+      score1: function(){
+        this.score1++
+        if(this.score1 > 9){
+          this.sounds.win.play()
+        }
+      },
+      score2: function(){
+        this.score2++
+        if(this.score1 > 9){
+          this.sounds.win.play()
+        }
+      },
+      reset: function(){
+        this.score1 = 0
+        this.score2 = 0
       }
     },
-
     ready () {
       var obj = {};
       var isReadyA = false;
