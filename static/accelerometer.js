@@ -1,9 +1,17 @@
 /* variables */
 var x = 0, y = 0, z = 0, rot_a = 0, rot_b = 0, rot_c = 0;
+var eventTimeout;
 
-console.log("File linked");
+window.addEventListener("deviceorientation", throttledHandler, true);
 
-window.addEventListener("deviceorientation", handleOrientation, true);
+function throttledHandler(event){
+  if ( !eventTimeout ) {
+    eventTimeout = setTimeout(function() {
+      eventTimeout = null;
+      handleOrientation(event);
+    }, 100);
+  }
+}
 
 function handleOrientation(event) {
   console.log("Device orientation activated");
