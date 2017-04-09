@@ -7,19 +7,20 @@
         <script src="https://cdn.rawgit.com/zcanter/aframe-gradient-sky/master/dist/gradientsky.min.js"></script>
     </head>
     <body>
+    
+      <audio autoplay loop id="backgroundSound">
+        <source src="static/ocean.mp3" type="audio/mpeg"> Your browser does not support audio
+      </audio>
 
-    <audio id="beep">
-      <source src="assets/sound/beep.wav" type="audio/wav" />
-    </audio>
-
-    <a-scene fog="type: linear; near: 2; far: 50; color: #000a1c">
+      <!-- Scene -->
+      <a-scene fog="type: linear; near: 2; far: 50; color: #000a1c">
 
       <!-- Plane -->
       <a-plane rotation= "-90 0 0" position= "0 -0.3 0" color="#000" height="100%" width="100%"></a-plane>
 
       <!-- Trees -->
       <a-entity>
-        <a-collada-model scale= "2.0 2.15 2.0" rotation= "0 70 0" src="static/trees.dae" position="0 0.25 0" rotation="0 180 0" > </a-collada-model>
+        <a-collada-model scale= "2.0 2.15 2.0" rotation= "0 70 0" src="static/trees.dae" position="0 0.25 0" rotation="0 180 0" > </a-collada-model>  
       </a-entity>
 
       <!-- Ocean -->
@@ -33,20 +34,32 @@
       <a-light color="#ED7140" distance="100" intensity="0.4" type="point"></a-light>
       <a-light color="#ED7140" position="3 10 -10" distance="50" intensity="0.4" type="point"></a-light>
 
+      <!-- Rock -->
       <a-entity>
         <a-collada-model
             scale= "0.5 0.5 0.5"
-            rotation= " 0 70 0"
+            rotation= "0 ${sphere.position.alpha} ${sphere.position.gamma}"
             src="static/Rock1.dae"
             v-bind:position="spherePositionAttr"
-            rotation="0 180 0"
-            >  </a-collada-model>
+            rotation="0 180 0" 
+            >  </a-collada-model>  
+      </a-entity>
+
+      <!-- Camera -->
+      <a-entity position="0 0 10">
+        <a-camera></a-camera>
       </a-entity>
 
       </a-scene>
     </body>
 
 <script>
+
+/* Audio */
+var audio = document.getElementById("backgroundSound");
+audio.volume = 0.3;
+
+/* Vue */
 
 Vue.config.delimiters = ["${", "}"];
 
@@ -67,19 +80,32 @@ Vue.config.delimiters = ["${", "}"];
         }
       },
       sounds: {
-        score: new Audio('../static/beep.mp3')
+        score: new Audio('../static/beep.mp3'),
+        splash: new Audio('../static/splash.mp3'),
       },
       playedScoreSound : false,
+      playedSplashSound : false,
     },
     computed: {
       spherePositionAttr () {
         const pos = this.sphere.position;
-        return `0 ${pos.beta} 0`;
+        return `0 ${pos.beta} 4`;
       }
     },
     watch: {
       'sphere.position.beta': function(threshold){
-        //console.log("threshold " + threshold);
+        console.log("THRESHOLD " + threshold);
+        /* play splash when reach ocean */
+        if(threshold < 0.3) {
+          if(!this.playedSplashSound){
+            this.sounds.splash.play()
+            this.playedSplashSound = true;
+          }
+        } else {
+          this.playedSplashSound = false;
+        }
+
+        /* play scored sound when reach high level */
         if(threshold > 2.0){
           if(!this.playedScoreSound){
             this.sounds.score.play()
@@ -112,7 +138,7 @@ Vue.config.delimiters = ["${", "}"];
         // var posY = (obj.beta / 30) + 0.5;
         // this.sphere.position.beta = posY < 0 ? 0 : posY;
         this.sphere.position.beta = obj.beta / 30;
-        this.sphere.position.gamma = obj.gamma;
+        this.sphere.position.gamma = (1 - obj.gamma) / 10;
       });
     },
   })
