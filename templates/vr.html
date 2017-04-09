@@ -49,6 +49,10 @@
       <a-entity v-if="isStarted " scale="15 15 15" position="-8.5 2.92 3.36" rotation="0 180 0" :text="'opacity: 0.8; value: '+ (score1) +'; zOffset: 0'"></a-entity>
       <a-entity v-if="isStarted " scale="15 15 15" position="-6.5 2.92 3.36" rotation="0 180 0" :text="'opacity: 0.8; value: '+ (score2) +'; zOffset: 0'"></a-entity>
 
+      <!-- Connection Test -->
+      <a-entity v-if="isReadyA" id="playerOneConnected" scale="5 5 5" position="1.6 0.68 4.08" rotation="0 180 0" text="opacity: 0.5; value: Player 1 Connected; zOffset: 0"></a-entity>
+      <a-entity v-if="isReadyB" id="playerTwoConnected" scale="5 5 5" position="-5 0.68 4.08" rotation="0 180 0" text="opacity: 0.5; value: Player 2 Connected; zOffset: 0"></a-entity>
+
       <!-- Camera -->
       <a-entity position="-0.06 1 -0.45" rotation="0 -177 0">
         <a-camera position="0 0 0" rotation="2.2 -4.35 0"></a-camera>

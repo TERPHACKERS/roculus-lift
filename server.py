@@ -20,7 +20,7 @@ b = False
 @socketio.on('join', namespace='/room')
 def on_join():
     global a,b
-    print 'join'
+    print('join')
     if a and b:
         return
     join_room('default')
@@ -28,7 +28,7 @@ def on_join():
     if a:
         me = 'b'
 
-    print me
+    print(me)
     if me == 'b':
         b = True
     else:
