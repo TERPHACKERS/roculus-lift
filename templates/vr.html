@@ -8,13 +8,16 @@
     </head>
     <body>
 
+      <!-- Music -->
       <audio autoplay loop id="backgroundSound">
         <source src="static/ocean.mp3" type="audio/mpeg"> Your browser does not support audio
       </audio>
 
       <audio autoplay loop id="backgroundSound">
-        <source src="static/tune-1.mp3" type="audio/mpeg"> Your browser does not support audio
+        <source src="static/tune-1.wav" type="audio/wav"> Your browser does not support audio
       </audio>
+
+      <!-- Text -->
 
       <!-- Scene -->
       <a-scene fog="type: linear; near: 2; far: 50; color: #000a1c">
@@ -85,8 +88,6 @@ Vue.component('lift-rock', {
   computed: {
     spherePositionAttr: function () {
       console.log(this)
-      console.log(this.beta)
-      console.log(this.horizontal_pos)
 
       return this.horizontal_pos + ' ' + this.beta + ' ' + 4;
     }
