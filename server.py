@@ -12,7 +12,6 @@ socketio = SocketIO(app)
 
 @socketio.on('push', namespace="/sensor")
 def acc_socket(message):
-    print message
     emit(message, broadcast=True)
 
 a = False

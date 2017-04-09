@@ -6,7 +6,7 @@
         <script src="http://cdn.rawgit.com/donmccurdy/aframe-extras/v3.7.0/dist/aframe-extras.min.js"></script>
         <script src="https://cdn.rawgit.com/zcanter/aframe-gradient-sky/master/dist/gradientsky.min.js"></script>
     </head>
-    <body @keyup.90="reset">
+    <body>
 
       <!-- Music -->
       <audio autoplay loop id="backgroundSound">
@@ -43,7 +43,7 @@
       <lift-rock @score="score2" :playerNum="2" :alpha="rock2.alpha" :beta="rock2.beta" :gamma="rock2.gamma" :horizontal_pos="rock2.horizontal_pos"></lift-rock>
 
       <!-- Text -->
-      <a-entity scale="10 10 10" position="4.85 2 8" text="opacity: 0.8; value: 5; zOffset: 0"></a-entity>
+      <a-entity scale="10 10 10" position="4.85 2 8" :text="'opacity: 0.8; value: '+ i +'; zOffset: 0'"></a-entity>
 
       <!-- Camera -->
       <a-entity position="0 0 10">
@@ -88,7 +88,7 @@ Vue.component('lift-rock', {
   },
   computed: {
     spherePositionAttr: function () {
-      console.log(this)
+      //console.log(this)
 
       return this.horizontal_pos + ' ' + this.beta + ' ' + 4;
     }
@@ -100,7 +100,7 @@ Vue.component('lift-rock', {
       if(threshold < 0.3) {
         if(!this.playedSplashSound){
           this.sounds.splash.play()
-          this.$emit('score')
+          //this.$emit('score')
           this.playedSplashSound = true;
         }
       } else {
@@ -146,32 +146,38 @@ Vue.component('lift-rock', {
         win: new Audio('../static/win.wav'),
       },
       score1: 0,
-      score2: 0
+      score2: 0,
+      isReadyA : false,
+      isReadyB : false,
+      isStarting : false,
+      isStarted : false,
+      i: 5,
+      start: null,
+      countdown: null,
+      toggled: false,
     },
     methods: {
       score1: function(){
+        if (!this.isStarted) return;
         this.score1++
         if(this.score1 > 9){
           this.sounds.win.play()
         }
       },
       score2: function(){
+        if (!this.isStarted) return;
         this.score2++
         if(this.score1 > 9){
           this.sounds.win.play()
         }
       },
-      reset: function(){
+      resetGame: function(){
         this.score1 = 0
         this.score2 = 0
       }
     },
     ready () {
       var obj = {};
-      var isReadyA = false;
-      var isReadyB = false;
-      var isStarting = false;
-      var isStarted = false;
 
       var socket = io.connect("ws://dev.txtpen.com:5000/sensor");
       var onevent = socket.onevent;
@@ -186,7 +192,7 @@ Vue.component('lift-rock', {
       socket.on('*', (obj)=>{
         // console.log(obj);
         if (obj.me == 'a'){
-          isReadyA = true;
+          this.isReadyA = true;
           this.rock1.alpha = obj.alpha;
           // var posY = (obj.beta / 30) + 0.5;
           // this.sphere.position.beta = posY < 0 ? 0 : posY;
@@ -194,7 +200,7 @@ Vue.component('lift-rock', {
           this.rock1.gamma = (1 - obj.gamma) / 10;
           this.rock1.horizontal_pos = 0;
         } else if (obj.me == 'b') {
-          isReadyB = true;
+          this.isReadyB = true;
           this.rock2.alpha = obj.alpha;
           // var posY = (obj.beta / 30) + 0.5;
           // this.sphere.position.beta = posY < 0 ? 0 : posY;
@@ -202,32 +208,34 @@ Vue.component('lift-rock', {
           this.rock2.gamma = (1 - obj.gamma) / 10;
           this.rock2.horizontal_pos = 2;
         }
+
+        if (! this.toggled) {
+          if (this.isReadyA && this.isReadyB && !this.isStarting) {
+            this.isStarting = true;
+          }
+
+          if (this.isStarting && !this.isStarted) {
+              this.toggled = true;
+            this.isStarting = false;
+            this.countdown = setInterval(()=>{
+              this.i = this.i - 1;
+              speechSynthesis.speak(new SpeechSynthesisUtterance((this.i+1).toString()));
+              console.log(this.i);
+              
+              // draw text
+
+              if (this.i == 0){
+                clearInterval(this.countdown);
+                this.isStarting = false;
+                this.isStarted = true;
+              }
+            }, 1000);
+          }
+        }
       });
 
-      if (isReadyA && isReadyB && !isStarting) isStarting = true;
 
-      if (isStarting) {
-        // countdown start
-        var start = new Date().getTime();
-        var i = 5;
-        var countdown = setInterval(()=>{
-          speechSynthesis.speak(new SpeechSynthesisUtterance(i.toString()));
-          i = i - 1;
-          
-          // draw text
-          if ( new Date().getTime() - start >= 5000 ) {
-            clearInterval(countdown);
-          }
-        }, 1000);
-        setTimeout(()=>{
-          isStarting = false;
-          isStarted = true;
-        }, 5000);
-      }
-
-      if (isStarted) {
-        //counter
-      }
+      this.start = new Date().getTime();
 
     },
   })
