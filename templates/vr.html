@@ -23,26 +23,17 @@
     </body>
 
 <script>
-  const tween = TweenMax;
 
-  var obj = {};
-  var socket = io.connect("ws://dev.txtpen.com:5000/acc");
-  socket.onevent = function (packet) {
-      var args = packet.data || [];
-      socket.onevent.call (this, packet);    // original call
-      packet.data = ["*"].concat(args);
-      socket.onevent.call(this, packet);      // additional call to catch-all
-  };
-
+Vue.config.delimiters = ["${", "}"];
 
   new Vue({
     el: 'body',
     data: {
       sphere: {
         position: {
-          x: 1,
-          y: 1,
-          z: -1
+          alpha: 0,
+          beta: 0,
+          gamma: 0
         }
       },
       plane: {
@@ -58,7 +49,7 @@
     computed: {
       spherePositionAttr () {
         const pos = this.sphere.position;
-        return `${pos.x} ${pos.y} ${pos.z}`;
+        return `0 ${pos.beta} 0`;
       }
     },
     methods: {
@@ -68,13 +59,28 @@
     },
     ready () {
       this.sounds.score.play()
+
+      var obj = {};
+
+      var socket = io.connect("ws://dev.txtpen.com:5000/acc");
+      var onevent = socket.onevent;
+
+      socket.onevent = function (packet) {
+          var args = packet.data || [];
+          onevent.call (this, packet);    // original call
+          packet.data = ["*"].concat(args);
+          onevent.call(this, packet);      // additional call to catch-all
+      };
+
       socket.on('*', (data)=>{
-        console.log(data);
         obj = JSON.parse(data);
-        this.sphere.position.z = obj.gamma;
+        console.log(obj);
+        this.sphere.position.alpha = obj.alpha;
+        this.sphere.position.beta = obj.beta / 45;
+        this.sphere.position.gamma = obj.gamma;
       });
       // TweenMax.to(this.sphere.position, 1, {bezier:[{x:1, y:1}, {x:0, y:2}, {x:-1, y:1}, {x:0, y:0}, {x:1, y:1}], ease:Linear.easeNone, repeat: -1});
-    }
+    },
   })
 </script>
 
