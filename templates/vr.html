@@ -43,8 +43,9 @@ Vue.config.delimiters = ["${", "}"];
         }
       },
       sounds: {
-        score: new Audio('../Static/beep.mp3')
-      }
+        score: new Audio('../static/beep.mp3')
+      },
+      playedScoreSound : false,
     },
     computed: {
       spherePositionAttr () {
@@ -52,13 +53,20 @@ Vue.config.delimiters = ["${", "}"];
         return `0 ${pos.beta} 0`;
       }
     },
-    methods: {
-      playScoreSound: function(){
-        this.sounds.score.play()
+    watch: {
+      'sphere.position.beta': function(newBeta){
+        if(newBeta > 0.5){
+          if(!this.playedScoreSound){
+            this.sounds.score.play()
+            this.playedScoreSound = true;
+          }
+        } else{
+          this.playedScoreSound = false;
+        }
       }
+
     },
     ready () {
-      this.sounds.score.play()
 
       var obj = {};
 
