@@ -1,8 +1,7 @@
 from flask import Flask, Blueprint, render_template
-from flask_socketio import SocketIO, emit
-
-# client_id_set = set()
-curr_client_id = 0
+from flask_socketio import SocketIO, emit, disconnect
+from time import time
+last_received = {}
 
 html = Blueprint('html', __name__,
                  template_folder='templates')
@@ -13,24 +12,29 @@ socketio = SocketIO(app)
 
 @socketio.on('connect', namespace='/sensor')
 def sensor_connect():
+    global curr_client_num
+    check_if_expired()
 
-    # i = 0
-    # while i in client_id_set:
-    #     i+=1
-    # client_id_set.add(i)
+    if (len(last_received.keys())>1):
+        disconnect()
+    else:
+        i = 0
+        if(i in last_received.keys()):
+            i = 1
 
-    i = (curr_client_id+1)%2
+        
+        print('Adding client id ',i)
+        emit('set client id', {'client_id': i})
 
-    print('Adding client id ',i)
-    emit('set client id', {'client_id': i})
-
-@socketio.on('disconnect sensor', namespace='/sensor')
-def sensor_disconnect(message):
-    print('Removing client id ',message)
-    client_id_set.remove(message)
+# @socketio.on('disconnect', namespace='/sensor')
+# def sensor_disconnect():
+#     global curr_client_num
+#     print('Removing client, now ', )
 
 @socketio.on('push', namespace="/sensor")
 def acc_socket(message):
+    msg = json.loads(message)
+    last_received[msg['client_id']] = time()
     emit(message, broadcast=True, namespace="/vr")
 
 @app.route('/')
@@ -40,6 +44,12 @@ def hello():
 @app.route('/vr')
 def render():
     return render_template('/vr.html')
+
+def check_if_expired():
+    global last_received
+    for (key, value) in last_received.items():
+        if time() - value > 1000:
+            del last_received[key]
 
 if __name__ == "__main__":
     from gevent import pywsgi

@@ -14,10 +14,6 @@ socket.on('connect', function () {
     client_id = data['client_id']
   });
 
-  socket.on('disconnected', function() {
-    socket.emit('disconnect sensor', client_id);
-  });
-
 });
 
 function throttledHandler(event){
