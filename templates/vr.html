@@ -60,8 +60,9 @@ Vue.config.delimiters = ["${", "}"];
       }
     },
     watch: {
-      'sphere.position.beta': function(newBeta){
-        if(newBeta > 0.5){
+      'sphere.position.beta': function(threshold){
+        console.log("threshold " + threshold);
+        if(threshold > 2.0){
           if(!this.playedScoreSound){
             this.sounds.score.play()
             this.playedScoreSound = true;
@@ -90,10 +91,9 @@ Vue.config.delimiters = ["${", "}"];
         obj = JSON.parse(data);
         console.log(obj);
         this.sphere.position.alpha = obj.alpha;
-        this.sphere.position.beta = obj.beta / 45;
+        this.sphere.position.beta = obj.beta / 30;
         this.sphere.position.gamma = obj.gamma;
       });
-      // TweenMax.to(this.sphere.position, 1, {bezier:[{x:1, y:1}, {x:0, y:2}, {x:-1, y:1}, {x:0, y:0}, {x:1, y:1}], ease:Linear.easeNone, repeat: -1});
     },
   })
 </script>
