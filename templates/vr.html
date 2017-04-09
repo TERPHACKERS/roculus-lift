@@ -2,29 +2,46 @@
     <head>
         <script src="https://aframe.io/releases/0.5.0/aframe.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/1.0.12/vue.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.18.1/plugins/BezierPlugin.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.18.1/TweenMax.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.7.3/socket.io.min.js"></script>
+        <script src="http://cdn.rawgit.com/donmccurdy/aframe-extras/v3.7.0/dist/aframe-extras.min.js"></script>
+        <script src="https://cdn.rawgit.com/zcanter/aframe-gradient-sky/master/dist/gradientsky.min.js"></script>
     </head>
     <body>
-    <a-scene fog="type: linear; near: 2; far: 20; color: white">
 
-        <a-sky color="#6EBAA7"></a-sky>
-	    <a-plane rotation= "-90 0 0" position= "0 -.2 0" color="#94a550" height="100%" width="100%"></a-plane>
+    <audio id="beep">
+      <source src="assets/sound/beep.wav" type="audio/wav" />
+    </audio>
 
-        <a-entity>
-          <a-collada-model scale= "2.0 2.15 2.0" rotation= " 0 70 0" src="static/trees.dae" position="0 -0.09 0" rotation="0 180 0" > </a-collada-model>  
-        </a-entity>
+    <a-scene fog="type: linear; near: 2; far: 50; color: #000a1c">
 
-        <a-entity>
-          <a-collada-model
-              scale= "0.5 0.5 0.5" 
-              rotation= "0 70 0" 
-              src="static/Rock1.dae" 
-              v-bind:position="spherePositionAttr"
-              rotation="0 180 0" 
-              >  </a-collada-model>  
-        </a-entity>
+      <!-- Plane -->
+      <a-plane rotation= "-90 0 0" position= "0 -0.3 0" color="#000" height="100%" width="100%"></a-plane>
+
+      <!-- Trees -->
+      <a-entity>
+        <a-collada-model scale= "2.0 2.15 2.0" rotation= "0 70 0" src="static/trees.dae" position="0 0.25 0" rotation="0 180 0" > </a-collada-model>  
+      </a-entity>
+
+      <!-- Ocean -->
+      <a-ocean height="100%" width="100%" depth="50" density="40" opacity="0.9" position="0 0.25 0"></a-ocean>
+
+      <!-- Sky -->
+      <a-gradient-sky material="shader: gradient; topColor: 0 16 40; bottomColor: 35 7 18;"></a-gradient-sky>
+
+      <!-- Lighting -->
+      <a-light type="ambient" intensity="0.5" color="#ccc"></a-light>
+      <a-light color="#ED7140" distance="100" intensity="0.4" type="point"></a-light>
+      <a-light color="#ED7140" position="3 10 -10" distance="50" intensity="0.4" type="point"></a-light>
+
+      <a-entity>
+        <a-collada-model
+            scale= "0.5 0.5 0.5"
+            rotation= " 0 70 0"
+            src="static/Rock1.dae"
+            v-bind:position="spherePositionAttr"
+            rotation="0 180 0" 
+            >  </a-collada-model>  
+      </a-entity>
 
       </a-scene>
     </body>
@@ -62,7 +79,7 @@ Vue.config.delimiters = ["${", "}"];
     },
     watch: {
       'sphere.position.beta': function(threshold){
-        console.log("threshold " + threshold);
+        //console.log("threshold " + threshold);
         if(threshold > 2.0){
           if(!this.playedScoreSound){
             this.sounds.score.play()
@@ -91,9 +108,10 @@ Vue.config.delimiters = ["${", "}"];
       socket.on('*', (data)=>{
         obj = JSON.parse(data);
         console.log(obj);
-        var posY = (obj.beta / 30) + 0.2;
         this.sphere.position.alpha = obj.alpha;
-        this.sphere.position.beta = posY < 0 ? 0 : posY;
+        // var posY = (obj.beta / 30) + 0.5;
+        // this.sphere.position.beta = posY < 0 ? 0 : posY;
+        this.sphere.position.beta = obj.beta / 30;
         this.sphere.position.gamma = obj.gamma;
       });
     },
