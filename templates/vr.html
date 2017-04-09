@@ -141,15 +141,24 @@ Vue.component('lift-rock', {
         gamma: 0,
         horizontal_pos: 2,
       },
+      sounds: {
+        win: new Audio('../static/win.wav'),
+      },
       score1: 0,
       score2: 0
     },
     methods: {
       score1: function(){
         this.score1++
+        if(this.score1 > 9){
+          this.sounds.win.play()
+        }
       },
       score2: function(){
         this.score2++
+        if(this.score1 > 9){
+          this.sounds.win.play()
+        }
       },
       reset: function(){
         this.score1 = 0
