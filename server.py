@@ -10,7 +10,7 @@ app = Flask(__name__)
 app.register_blueprint(html, url_prefix=r'/')
 socketio = SocketIO(app)
 
-@socketio.on('connect', namespace='/acc')
+@socketio.on('connect', namespace='/sensor')
 def sensor_connect():
 
     i = 0
@@ -22,14 +22,14 @@ def sensor_connect():
     print('Adding client id ',i)
     emit('set client id', {'client_id': i})
 
-@socketio.on('disconnect sensor', namespace='/acc')
+@socketio.on('disconnect sensor', namespace='/sensor')
 def sensor_disconnect(message):
     print('Removing client id ',i)
     client_id_set.remove(message)
 
-@socketio.on('push', namespace="/acc")
+@socketio.on('push', namespace="/sensor")
 def acc_socket(message):
-    emit(ret, broadcast=True)
+    emit(message, broadcast=True, namespace="/vr")
 
 @app.route('/')
 def hello():

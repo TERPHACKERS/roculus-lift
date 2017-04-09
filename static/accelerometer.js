@@ -6,7 +6,7 @@ var client_id = -1
 
 window.addEventListener("deviceorientation", throttledHandler, true);
 
-var socket = io.connect("ws://dev.txtpen.com:5000/acc");
+var socket = io.connect("ws://dev.txtpen.com:5000/sensor");
 
 socket.on('connect', function () {
 
