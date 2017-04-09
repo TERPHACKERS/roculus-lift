@@ -43,11 +43,11 @@
       <lift-rock @score="score2" :playerNum="2" :alpha="rock2.alpha" :beta="rock2.beta" :gamma="rock2.gamma" :horizontal_pos="rock2.horizontal_pos"></lift-rock>
 
       <!-- Text -->
-      <a-entity scale="10 10 10" position="4.85 2 8" text="opacity: 0.8; value: 5; zOffset: 0"></a-entity>
+      <a-entity scale="15 15 15" position="-7.5 2.92 3.36" rotation="0 180 0" text="opacity: 1.0; value: 5; zOffset: 0"></a-entity>
 
       <!-- Camera -->
-      <a-entity position="0 0 10">
-        <a-camera></a-camera>
+      <a-entity position="-0.06 1 -0.45" rotation="0 -177 0">
+        <a-camera position="0 0 0" rotation="2.2 -4.35 0"></a-camera>
       </a-entity>
 
       </a-scene>
@@ -90,7 +90,7 @@ Vue.component('lift-rock', {
     spherePositionAttr: function () {
       console.log(this)
 
-      return this.horizontal_pos + ' ' + this.beta + ' ' + 4;
+      return this.horizontal_pos + ' ' + this.beta + ' ' + 5;
     }
   },
   watch: {
@@ -134,13 +134,13 @@ Vue.component('lift-rock', {
         alpha: 0,
         beta: 0,
         gamma: 0,
-        horizontal_pos: 0,
+        horizontal_pos: -1.4,
       },
       rock2 : {
         alpha: 0,
         beta: 0,
         gamma: 0,
-        horizontal_pos: 2,
+        horizontal_pos: 1,
       },
       score1: 0,
       score2: 0
