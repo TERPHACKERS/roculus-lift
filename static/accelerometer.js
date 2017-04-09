@@ -10,8 +10,8 @@ var socket = io.connect("ws://dev.txtpen.com:5000/sensor");
 
 socket.on('connect', function () {
 
-  socket.on('set client id', function (id) {
-    client_id = id
+  socket.on('set client id', function (data) {
+    client_id = data['client_id']
   });
 
   socket.on('disconnected', function() {
@@ -41,6 +41,9 @@ function handleOrientation(event) {
   document.getElementById("orientationAlpha").innerHTML = alpha;
   document.getElementById("orientationBeta").innerHTML = beta;
   document.getElementById("orientationGamma").innerHTML = gamma;
+
+  document.getElementById("clientId").innerHTML = client_id;
+
 
   var obj = {absolute, alpha, beta, gamma, client_id};
   sendSock(JSON.stringify(obj));
