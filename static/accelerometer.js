@@ -9,7 +9,7 @@ function throttledHandler(event){
     eventTimeout = setTimeout(function() {
       eventTimeout = null;
       handleOrientation(event);
-    }, 100);
+    }, 16.6);
   }
 }
 
