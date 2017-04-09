@@ -17,8 +17,6 @@
         <source src="static/tune-1.wav" type="audio/wav"> Your browser does not support audio
       </audio>
 
-      <!-- Text -->
-
       <!-- Scene -->
       <a-scene fog="type: linear; near: 2; far: 50; color: #000a1c">
 
@@ -43,6 +41,9 @@
 
       <lift-rock @score="score1" :playerNum="1" :alpha="rock1.alpha" :beta="rock1.beta" :gamma="rock1.gamma" :horizontal_pos="rock1.horizontal_pos"></lift-rock>
       <lift-rock @score="score2" :playerNum="2" :alpha="rock2.alpha" :beta="rock2.beta" :gamma="rock2.gamma" :horizontal_pos="rock2.horizontal_pos"></lift-rock>
+
+      <!-- Text -->
+      <a-entity scale="10 10 10" position="4.85 2 8" text="opacity: 0.8; value: 5; zOffset: 0"></a-entity>
 
       <!-- Camera -->
       <a-entity position="0 0 10">
