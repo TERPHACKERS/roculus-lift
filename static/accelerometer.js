@@ -7,14 +7,9 @@ var client_id = -1
 window.addEventListener("deviceorientation", throttledHandler, true);
 
 var socket = io.connect("ws://dev.txtpen.com:5000/sensor");
+var room = io.connect("ws://dev.txtpen.com:5000/room");
 
-socket.on('connect', function () {
-
-  socket.on('set client id', function (data) {
-    client_id = data['client_id']
-  });
-
-});
+var me = 'a';
 
 function throttledHandler(event){
   if ( !eventTimeout ) {
@@ -27,27 +22,26 @@ function throttledHandler(event){
 
 function handleOrientation(event) {
   console.log("Device orientation activated");
+  console.log(me);
 
   var absolute = event.absolute;
   var alpha    = event.alpha;
   var beta     = event.beta;
   var gamma    = event.gamma;
 
-  document.getElementById("orientationAbsolute").innerHTML = absolute;
-  document.getElementById("orientationAlpha").innerHTML = alpha;
-  document.getElementById("orientationBeta").innerHTML = beta;
-  document.getElementById("orientationGamma").innerHTML = gamma;
+  document.getElementById("me").innerHTML = me;
 
-  document.getElementById("clientId").innerHTML = client_id;
-
-
-  var obj = {absolute, alpha, beta, gamma, client_id};
-  sendSock(JSON.stringify(obj));
+  var obj = {absolute, alpha, beta, gamma, me};
+  sendSock(obj);
 
 }
 
+function clickthis(){
+  me = (me=='a'?'b':'a');
+  document.getElementById("me").innerHTML = me;
+}
+
+
 function sendSock(e){
-  if(client_id!=-1){
-    socket.emit('push',e);
-  }
+  socket.emit('push',e);
 }

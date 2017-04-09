@@ -4,28 +4,14 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.7.3/socket.io.min.js"></script>
 <title>Accelerometer</title>
 <meta name="viewport" content="width=device-width,user-scalable=yes" />
-<style>
-body {
-	font-family: helvetica, arial, sans serif;
-}
-</style>
 </head>
 
-<body>
-<div id="content">
-    <h1>Accelerometer Javascript Test</h1>
-<ul>
-  <li>id: <span id="clientId"></span>g</li>
-	<li>absolute: <span id="orientationAbsolute"></span>g</li>
-	<li>alpha: <span id="orientationAlpha"></span>g</li>
-	<li>beta: <span id="orientationBeta"></span>g</li>
-	<li>gamma: <span id="orientationGamma"></span>g</li>
-</ul>
+<body style="display:flex; flex-direction: column; align-items:center;">
 
-<span id="rep"></span>
-<span id="count"></span>
+<h1 id="me"></h1>
 
-</div>
+<button onclick="clickthis()" style="width:300px;height:300px" />
+
 <script type="text/javascript" src="../static/accelerometer.js"></script>
 
 </body>

@@ -107,7 +107,7 @@ Vue.config.delimiters = ["${", "}"];
 
       socket.on('*', (data)=>{
         obj = JSON.parse(data);
-        console.log(obj);
+        console.log(obj.me);
         this.sphere.position.alpha = obj.alpha;
         // var posY = (obj.beta / 30) + 0.5;
         // this.sphere.position.beta = posY < 0 ? 0 : posY;
