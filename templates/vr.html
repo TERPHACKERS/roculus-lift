@@ -9,7 +9,8 @@
     <body>
     <a-scene fog="type: linear; near: 2; far: 25; color: white">
 
-	    <a-plane rotation= "-90 0 0" position= "0 -.2 0" color="#94a550" height="100" width="100"></a-plane>
+	    <a-plane shadow="cast:true;receive:true;" rotation= "-90 0 0" position= "0 -.2 0" color="#94a550" height="100%" width="100%"></a-plane>
+        <a-sky color="#6EBAA7"></a-sky>
 
         <a-entity>
           <a-collada-model scale= "2.0 2.15 2.0" rotation= " 0 70 0" src="static/trees.dae" position="0 -0.09 0" rotation="0 180 0" > </a-collada-model>  
@@ -18,7 +19,7 @@
         <a-entity>
           <a-collada-model
               scale= "0.5 0.5 0.5" 
-              rotation= " 0 70 0" 
+              rotation= "0 70 0" 
               src="static/Rock1.dae" 
               v-bind:position="spherePositionAttr"
               rotation="0 180 0" 
