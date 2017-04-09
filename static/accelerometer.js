@@ -2,7 +2,23 @@
 var x = 0, y = 0, z = 0, rot_a = 0, rot_b = 0, rot_c = 0;
 var eventTimeout;
 
+var client_id = -1
+
 window.addEventListener("deviceorientation", throttledHandler, true);
+
+var socket = io.connect("ws://dev.txtpen.com:5000/acc");
+
+socket.on('connect', function () {
+
+  socket.on('set client id', function (id) {
+    client_id = id
+  });
+
+  socket.on('disconnected', function() {
+    socket.emit('disconnect sensor', client_id);
+  });
+
+});
 
 function throttledHandler(event){
   if ( !eventTimeout ) {
@@ -15,7 +31,7 @@ function throttledHandler(event){
 
 function handleOrientation(event) {
   console.log("Device orientation activated");
-  
+
   var absolute = event.absolute;
   var alpha    = event.alpha;
   var beta     = event.beta;
@@ -26,13 +42,13 @@ function handleOrientation(event) {
   document.getElementById("orientationBeta").innerHTML = beta;
   document.getElementById("orientationGamma").innerHTML = gamma;
 
-  var obj = {absolute, alpha, beta, gamma};
+  var obj = {absolute, alpha, beta, gamma, client_id};
   sendSock(JSON.stringify(obj));
 
 }
 
-var socket = io.connect("ws://dev.txtpen.com:5000/acc");
-
 function sendSock(e){
- socket.emit('push',e);
+  if(id!=-1){
+    socket.emit('push',e);
+  }
 }
