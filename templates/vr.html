@@ -8,11 +8,16 @@
     </head>
     <body>
 
-    <audio id="beep">
-      <source src="assets/sound/beep.wav" type="audio/wav" />
-    </audio>
+      <audio autoplay loop id="backgroundSound">
+        <source src="static/ocean.mp3" type="audio/mpeg"> Your browser does not support audio
+      </audio>
 
-    <a-scene fog="type: linear; near: 2; far: 50; color: #000a1c">
+      <audio autoplay loop id="backgroundSound">
+        <source src="static/tune-1.mp3" type="audio/mpeg"> Your browser does not support audio
+      </audio>
+
+      <!-- Scene -->
+      <a-scene fog="type: linear; near: 2; far: 50; color: #000a1c">
 
       <!-- Plane -->
       <a-plane rotation= "-90 0 0" position= "0 -0.3 0" color="#000" height="100%" width="100%"></a-plane>
@@ -33,14 +38,12 @@
       <a-light color="#ED7140" distance="100" intensity="0.4" type="point"></a-light>
       <a-light color="#ED7140" position="3 10 -10" distance="50" intensity="0.4" type="point"></a-light>
 
-      <a-entity>
-        <a-collada-model
-            scale= "0.5 0.5 0.5"
-            rotation= " 0 70 0"
-            src="static/Rock1.dae"
-            v-bind:position="spherePositionAttr"
-            rotation="0 180 0"
-            >  </a-collada-model>
+      <lift-rock :playerNum="1" :alpha="rock1.alpha" :beta="rock1.beta" :gamma="rock1.gamma" :horizontal_pos="rock1.horizontal_pos"></lift-rock>
+      <lift-rock :playerNum="2" :alpha="rock2.alpha" :beta="rock2.beta" :gamma="rock2.gamma" :horizontal_pos="rock2.horizontal_pos"></lift-rock>
+
+      <!-- Camera -->
+      <a-entity position="0 0 10">
+        <a-camera></a-camera>
       </a-entity>
 
       </a-scene>
@@ -48,54 +51,100 @@
 
 <script>
 
+/* Audio */
+var audio = document.getElementById("backgroundSound");
+audio.volume = 0.3;
+
+/* Vue */
+
 Vue.config.delimiters = ["${", "}"];
+
+Vue.component('lift-rock', {
+  props:['playerNum','alpha','beta','gamma','horizontal_pos'],
+  template: `
+      <a-entity>
+        <a-collada-model
+            scale= "0.5 0.5 0.5"
+            rotation= "0 0 0"
+            src="static/Rock1.dae"
+            v-bind:position="spherePositionAttr"
+            rotation="0 180 0"
+            >  </a-collada-model>
+      </a-entity>
+  `,
+  data: function(){
+    return {
+      sounds: {
+        score: new Audio('../static/beep.mp3'),
+        splash: new Audio('../static/splash.mp3'),
+      },
+      playedScoreSound : false,
+      playedSplashSound : false,
+    }
+  },
+  computed: {
+    spherePositionAttr: function () {
+      console.log(this)
+      console.log(this.beta)
+      console.log(this.horizontal_pos)
+
+      return this.horizontal_pos + ' ' + this.beta + ' ' + 4;
+    }
+  },
+  watch: {
+    beta: function(threshold){
+      console.log("THRESHOLD " + threshold);
+      /* play splash when r\each ocean */
+      if(threshold < 0.3) {
+        if(!this.playedSplashSound){
+          this.sounds.splash.play()
+          this.playedSplashSound = true;
+        }
+      } else {
+        this.playedSplashSound = false;
+      }
+
+      /* play scored sound when reach high level */
+      if(threshold > 2.0){
+        if(!this.playedScoreSound){
+          this.sounds.score.play()
+          this.playedScoreSound = true;
+        }
+      } else{
+        this.playedScoreSound = false;
+      }
+    }
+
+  },
+})
 
   new Vue({
     el: 'body',
     data: {
-      sphere: {
-        position: {
-          alpha: 0,
-          beta: 0,
-          gamma: 0
-        }
-      },
       plane: {
         dimensions: {
           width: 4,
           height: 4
         }
       },
-      sounds: {
-        score: new Audio('../static/beep.mp3')
+      rock1 : {
+        alpha: 0,
+        beta: 0,
+        gamma: 0,
+        horizontal_pos: 0,
       },
-      playedScoreSound : false,
-    },
-    computed: {
-      spherePositionAttr () {
-        const pos = this.sphere.position;
-        return `0 ${pos.beta} 0`;
+      rock2 : {
+        alpha: 0,
+        beta: 0,
+        gamma: 0,
+        horizontal_pos: 2,
       }
     },
-    watch: {
-      'sphere.position.beta': function(threshold){
-        //console.log("threshold " + threshold);
-        if(threshold > 2.0){
-          if(!this.playedScoreSound){
-            this.sounds.score.play()
-            this.playedScoreSound = true;
-          }
-        } else{
-          this.playedScoreSound = false;
-        }
-      }
 
-    },
     ready () {
-
       var obj = {};
 
-      var socket = io.connect("ws://dev.txtpen.com:5000/vr");
+      var socket = io.connect("ws://dev.txtpen.com:5000/sensor");
       var onevent = socket.onevent;
 
       socket.onevent = function (packet) {
@@ -105,14 +154,24 @@ Vue.config.delimiters = ["${", "}"];
           onevent.call(this, packet);      // additional call to catch-all
       };
 
-      socket.on('*', (data)=>{
-        obj = JSON.parse(data);
-        console.log(obj.me);
-        this.sphere.position.alpha = obj.alpha;
-        // var posY = (obj.beta / 30) + 0.5;
-        // this.sphere.position.beta = posY < 0 ? 0 : posY;
-        this.sphere.position.beta = obj.beta / 30;
-        this.sphere.position.gamma = obj.gamma;
+      socket.on('*', (obj)=>{
+        console.log(obj);
+
+        if (obj.me == 'a'){
+          this.rock1.alpha = obj.alpha;
+          // var posY = (obj.beta / 30) + 0.5;
+          // this.sphere.position.beta = posY < 0 ? 0 : posY;
+          this.rock1.beta = obj.beta / 30;
+          this.rock1.gamma = (1 - obj.gamma) / 10;
+          this.rock1.horizontal_pos = 0;
+        } else{
+          this.rock2.alpha = obj.alpha;
+          // var posY = (obj.beta / 30) + 0.5;
+          // this.sphere.position.beta = posY < 0 ? 0 : posY;
+          this.rock2.beta = obj.beta / 30;
+          this.rock2.gamma = (1 - obj.gamma) / 10;
+          this.rock2.horizontal_pos = 2;
+        }
       });
     },
   })

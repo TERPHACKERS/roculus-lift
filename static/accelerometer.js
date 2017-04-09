@@ -31,7 +31,9 @@ function handleOrientation(event) {
 
   document.getElementById("me").innerHTML = me;
 
-  var obj = {absolute, alpha, beta, gamma, me};
+  var time = new Date().getTime();
+
+  var obj = {absolute, alpha, beta, gamma, me, time};
   sendSock(obj);
 
 }
