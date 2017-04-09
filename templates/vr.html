@@ -43,15 +43,18 @@
       <lift-rock @score="score2Func" :playerNum="2" :alpha="rock2.alpha" :beta="rock2.beta" :gamma="rock2.gamma" :horizontal_pos="rock2.horizontal_pos"></lift-rock>
 
       <!-- Text -->
-      <a-entity v-if="i!=5 && i!=0 " id="timerText" scale="15 15 15" position="-7.5 2.92 3.36" rotation="0 180 0" :text="'opacity: 0.8; value: '+ (i+1) +'; zOffset: 0'"></a-entity>
+      <a-entity v-if="i!=5 && i!=0 " id="timerText" scale="15 15 15" position="-7.5 2.92 3.36" rotation="0 180 0" :text="'opacity: 0.8; color: white; value: '+ (i+1) +'; zOffset: 0'"></a-entity>
+
+      <!-- Win Text -->
+      <a-entity v-if="isWon" scale="20 20 20" position="-7.5 3.92 3.36" rotation="0 180 0" :text="'opacity: 0.8; value: '+ ( winnerOfGame ) +'; zOffset: 0'"></a-entity>
 
       <!-- Score Text -->
-      <a-entity v-if="isStarted " scale="15 15 15" position="-8.5 2.92 3.36" rotation="0 180 0" :text="'opacity: 0.8; value: '+ (score1) +'; zOffset: 0'"></a-entity>
-      <a-entity v-if="isStarted " scale="15 15 15" position="-6.5 2.92 3.36" rotation="0 180 0" :text="'opacity: 0.8; value: '+ (score2) +'; zOffset: 0'"></a-entity>
+      <a-entity v-if="isStarted" scale="15 15 15" position="-8.5 2.92 3.36" rotation="0 180 0" :text="'opacity: 0.8; value: '+ (score1) +'; zOffset: 0'"></a-entity>
+      <a-entity v-if="isStarted" scale="15 15 15" position="-6.5 2.92 3.36" rotation="0 180 0" :text="'opacity: 0.8; value: '+ (score2) +'; zOffset: 0'"></a-entity>
 
       <!-- Connection Test -->
-      <a-entity v-if="isReadyA && !isStarted && !isStarting" id="playerOneConnected" scale="5 5 5" position="1.6 0.68 4.08" rotation="0 180 0" text="opacity: 0.5; value: Player 1 Connected; zOffset: 0"></a-entity>
-      <a-entity v-if="isReadyB && !isStarted && !isStarting" id="playerTwoConnected" scale="5 5 5" position="-5 0.68 4.08" rotation="0 180 0" text="opacity: 0.5; value: Player 2 Connected; zOffset: 0"></a-entity>
+      <a-entity v-if="isReadyA && !isStarted && !isStarting" id="playerOneConnected" scale="5 5 5" position="-5 0.68 4.08" rotation="0 180 0" text="opacity: 0.5; value: Player 2 Connected; zOffset: 0"></a-entity>
+      <a-entity v-if="isReadyB && !isStarted && !isStarting" id="playerTwoConnected" scale="5 5 5" position="1.6 0.68 4.08" rotation="0 180 0" text="opacity: 0.5; value: Player 1 Connected; zOffset: 0"></a-entity>
 
       <!-- Camera -->
       <a-entity position="-0.06 1 -0.45" rotation="0 -177 0">
@@ -167,19 +170,36 @@ Vue.component('lift-rock', {
       countdown: null,
       toggled: false,
     },
+    computed: {
+        isWon: function(){
+            return (this.score1>9 || this.score2>9)
+        },
+        winnerOfGame: function(){
+            return 'Player '+(this.score1>9?2:1)+' wins!'
+        },
+    },
     methods: {
       score1Func: function(){
         if (!this.isStarted) return;
         this.score1++
-        if(this.score1 % 10 == 0){
+        if(this.score1 !== 0 && this.score1 % 10 == 0){
           this.sounds.win.play()
+          this.isStarted = false;
+          setTimeout(()=>{
+            window.location.reload()
+          }, 5000);
+
         }
       },
       score2Func: function(){
         if (!this.isStarted) return;
         this.score2++
-        if(this.score1 % 10 == 0){
+        if(this.score2 !== 0 && this.score2 % 10 == 0){
           this.sounds.win.play()
+          this.isStarted = false
+          setTimeout(()=>{
+            window.location.reload()
+          }, 5000);
         }
       },
       resetGame: function(){
