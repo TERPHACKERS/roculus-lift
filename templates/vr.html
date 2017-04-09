@@ -32,7 +32,7 @@
       <a-ocean height="100%" width="100%" depth="50" density="40" opacity="0.9" position="0 0.25 0"></a-ocean>
 
       <!-- Sky -->
-      <a-gradient-sky material="shader: gradient; topColor: 0 16 40; bottomColor: 35 7 18;"></a-gradient-sky>
+      <a-gradient-sky :material="GradientSkyMaterial"></a-gradient-sky>
 
       <!-- Lighting -->
       <a-light type="ambient" intensity="0.5" color="#ccc"></a-light>
@@ -169,6 +169,7 @@ Vue.component('lift-rock', {
       start: null,
       countdown: null,
       toggled: false,
+      GradientSkyMaterial: "shader: gradient; topColor: 0 16 40; bottomColor: 35 7 18;",
     },
     computed: {
         isWon: function(){
@@ -185,6 +186,7 @@ Vue.component('lift-rock', {
         if(this.score1 !== 0 && this.score1 % 10 == 0){
           this.sounds.win.play()
           this.isStarted = false;
+          this.GradientSkyMaterial = "shader: gradient; topColor: 149 47 0; bottomColor: 35 7 18;"
           setTimeout(()=>{
             window.location.reload()
           }, 5000);
@@ -197,6 +199,7 @@ Vue.component('lift-rock', {
         if(this.score2 !== 0 && this.score2 % 10 == 0){
           this.sounds.win.play()
           this.isStarted = false
+          this.GradientSkyMaterial = "shader: gradient; topColor: 149 47 0; bottomColor: 35 7 18;"
           setTimeout(()=>{
             window.location.reload()
           }, 5000);
