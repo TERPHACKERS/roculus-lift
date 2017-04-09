@@ -22,7 +22,7 @@ def sensor_connect():
     i = (curr_client_id+1)%2
 
     print('Adding client id ',i)
-    emit('set client id', i)
+    emit('set client id', {'client_id': i})
 
 @socketio.on('disconnect sensor', namespace='/sensor')
 def sensor_disconnect(message):
