@@ -7,9 +7,9 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.7.3/socket.io.min.js"></script>
     </head>
     <body>
-    <a-scene fog="type: linear; near: 2; far: 25; color: white">
+    <a-scene fog="type: linear; near: 2; far: 50; color: white">
 
-	    <a-plane rotation= "-90 0 0" position= "0 -.2 0" color="#94a550" height="100" width="100"></a-plane>
+	    <a-plane rotation= "-90 0 0" position= "0 -.2 0" color="#94a550" height="100%" width="100%"></a-plane>
 
         <a-entity>
           <a-collada-model scale= "2.0 2.15 2.0" rotation= " 0 70 0" src="static/trees.dae" position="0 -0.09 0" rotation="0 180 0" > </a-collada-model>  
@@ -90,8 +90,9 @@ Vue.config.delimiters = ["${", "}"];
       socket.on('*', (data)=>{
         obj = JSON.parse(data);
         console.log(obj);
+        var posY = (obj.beta / 30) + 0.2;
         this.sphere.position.alpha = obj.alpha;
-        this.sphere.position.beta = obj.beta / 30;
+        this.sphere.position.beta = posY < 0 ? 0 : posY;
         this.sphere.position.gamma = obj.gamma;
       });
     },
