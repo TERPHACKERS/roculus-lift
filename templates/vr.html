@@ -13,7 +13,7 @@
         <source src="static/ocean.mp3" type="audio/mpeg"> Your browser does not support audio
       </audio>
 
-      <audio autoplay loop id="backgroundSound">
+      <audio autoplay loop id="backgroundSoundTune1">
         <source src="static/tune-1.wav" type="audio/wav"> Your browser does not support audio
       </audio>
 
@@ -185,8 +185,9 @@ Vue.component('lift-rock', {
         this.score1++
         if(this.score1 !== 0 && this.score1 % 10 == 0){
           this.sounds.win.play()
+          // speechSynthesis.speak(new SpeechSynthesisUtterance("Player 1 wins"));
           this.isStarted = false;
-          this.GradientSkyMaterial = "shader: gradient; topColor: 149 47 0; bottomColor: 35 7 18;"
+          this.GradientSkyMaterial = "shader: gradient; topColor: 39 99 118; bottomColor: 35 7 18;"
           setTimeout(()=>{
             window.location.reload()
           }, 5000);
@@ -198,8 +199,9 @@ Vue.component('lift-rock', {
         this.score2++
         if(this.score2 !== 0 && this.score2 % 10 == 0){
           this.sounds.win.play()
+          // speechSynthesis.speak(new SpeechSynthesisUtterance("Player 2 wins"));
           this.isStarted = false
-          this.GradientSkyMaterial = "shader: gradient; topColor: 149 47 0; bottomColor: 35 7 18;"
+          this.GradientSkyMaterial = "shader: gradient; topColor: 39 99 118; bottomColor: 35 7 18;"
           setTimeout(()=>{
             window.location.reload()
           }, 5000);
